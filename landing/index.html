@@ -159,6 +159,17 @@
     .card h3 { font-size: .92rem; font-weight: 600; margin-bottom: 4px; }
     .card p { font-size: .8rem; color: var(--muted); line-height: 1.5; }
 
+    .contact {
+      margin-top: 34px; display: inline-flex; align-items: center; gap: 10px;
+      font-size: .95rem; color: var(--text); text-decoration: none;
+      padding: 12px 22px; border-radius: 999px; border: 1px solid var(--border); background: var(--card);
+      backdrop-filter: blur(10px); transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+      opacity: 0; animation: rise .9s .85s ease-out forwards;
+    }
+    .contact:hover { border-color: rgba(0,212,255,.55); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,212,255,.15); }
+    .contact svg { width: 18px; height: 18px; stroke: var(--cyan); }
+    .contact span { color: var(--muted); }
+    .contact b { font-weight: 600; }
     footer { font-size: .78rem; color: var(--muted); opacity: .8; }
 
     @media (max-width: 640px) {
@@ -229,6 +240,11 @@
           <p>Every app in its own nest, shipped on push.</p>
         </div>
       </div>
+
+      <a class="contact" id="contact" href="#" aria-label="Email us">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+        <span>Get in touch</span><b id="contact-addr">info [at] appnest.us</b>
+      </a>
     </main>
 
     <footer>© <span id="y">2026</span> appnest.us</footer>
@@ -236,6 +252,13 @@
 
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
+
+    // Assemble the contact address at runtime so it isn't sitting in the HTML for scrapers
+    (function () {
+      const addr = ["info", "appnest.us"].join("@");
+      document.getElementById("contact").href = "mailto:" + addr;
+      document.getElementById("contact-addr").textContent = addr;
+    })();
 
     // Gently drifting star field
     (function () {
