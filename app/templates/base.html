@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+  <script src="https://unpkg.com/htmx.org@2.0.4" crossorigin="anonymous"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 10vh auto; padding: 0 1rem; text-align: center; }
+    button { font-size: 1rem; padding: .6rem 1.2rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+  {% block content %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,4 @@
+<div id="counter">
+  <p>Tıklama sayısı: <strong>{{ count }}</strong></p>
+  <button hx-post="/click" hx-target="#counter" hx-swap="outerHTML">Tıkla</button>
+</div>
