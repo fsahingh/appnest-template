@@ -57,3 +57,4 @@ uvicorn app.main:app --reload
 | `.github/workflows/deploy.yml` | main'e push'ta sunucuda deploy |
 | `deploy/new-app.sh` | Sunucuda yeni uygulama kurulumu |
 | `deploy/nginx.conf.example` | Betiğin oluşturduğu nginx ayarının örneği |
+| `landing/index.html` | appnest.us ana sayfası ("under construction"). Sunucuda `/var/www/appnest/` altına kopyalanır |
