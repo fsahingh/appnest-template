@@ -7,10 +7,15 @@ appnest.us'ta yayınlanan Python web uygulamaları için şablon.
 ## Nasıl çalışır
 
 ```
-tarayıcı ──https──> nginx (sunucu) ──> 127.0.0.1:<port> ──> Docker konteyneri (uvicorn)
+tarayıcı ──https──> Cloudflare (Access: Google ile giriş) ──mTLS──> nginx (sunucu) ──> 127.0.0.1:<port> ──> Docker (uvicorn)
 ```
 
 - Repo adı = uygulama adı = subdomain. `app1` reposu → `https://app1.appnest.us`
+- **Tüm `*.appnest.us` uygulamaları Cloudflare Access arkasındadır.** Giriş yapmamış kimse uygulamaya ulaşamaz.
+- nginx uygulamaları Cloudflare Origin sertifikasıyla sunar ve sadece Cloudflare'in
+  *Authenticated Origin Pull* istemci sertifikasını gösteren bağlantıları kabul eder
+  (sunucu IP'sine doğrudan gelen istekler 400 ile reddedilir, giriş atlanamaz).
+- Giriş yapan kullanıcının e-postası uygulamaya `Cf-Access-Authenticated-User-Email` başlığıyla gelir.
 - Her uygulamanın sunucuda kendi portu vardır (8001, 8002, ...). Port sadece sunucuya açıktır.
 - `main` dalına push → GitHub Actions sunucuya SSH ile bağlanır →
   `cd /opt/apps/<app> && git pull && docker compose up -d --build`
@@ -32,7 +37,8 @@ tarayıcı ──https──> nginx (sunucu) ──> 127.0.0.1:<port> ──> Do
    ```
    Betik ekrana bir deploy key basar ve bekler. Onu repo → **Settings → Deploy keys → Add deploy key**
    bölümüne ekleyip (write access KAPALI) Enter'a bas. Gerisini betik yapar:
-   kodu çeker, `.env` oluşturur, konteyneri başlatır, nginx'i ayarlar ve HTTPS sertifikası alır.
+   kodu çeker, `.env` oluşturur, konteyneri başlatır ve nginx'i ayarlar. Sertifika gerekmez
+   (Cloudflare wildcard origin sertifikası `/etc/ssl/cloudflare/` altında hazır).
 4. Bundan sonra her `git push` (main) otomatik deploy olur.
 
 Kullanılan portları görmek için sunucuda: `grep -h APP_PORT /opt/apps/*/.env`
@@ -56,5 +62,4 @@ uvicorn app.main:app --reload
 | `docker-compose.yml` | Port `127.0.0.1:${APP_PORT}`, `data` volume'u |
 | `.github/workflows/deploy.yml` | main'e push'ta sunucuda deploy |
 | `deploy/new-app.sh` | Sunucuda yeni uygulama kurulumu |
-| `deploy/nginx.conf.example` | Betiğin oluşturduğu nginx ayarının örneği |
-| `landing/index.html` | appnest.us ana sayfası ("under construction"). Sunucuda `/var/www/appnest/` altına kopyalanır |
+| `landing/index.html` | appnest.us ana sayfası (Sign in butonu). Sunucuda `/var/www/appnest/` altına kopyalanır |
