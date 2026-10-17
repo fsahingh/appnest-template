@@ -11,7 +11,7 @@ set -euo pipefail
 GH_USER="${GH_USER:-fsahingh}"
 DOMAIN="${DOMAIN:-appnest.us}"
 
-NAME="${1:-}"
+NAME="$(echo "${1:-}" | tr "[:upper:]" "[:lower:]")"
 PORT="${2:-}"
 if [[ ! "$NAME" =~ ^[a-z0-9-]+$ || ! "$PORT" =~ ^[0-9]+$ ]]; then
   echo "Kullanim: $0 <app-adi> <port>   (ornek: $0 app1 8001)"

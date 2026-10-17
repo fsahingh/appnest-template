@@ -19,7 +19,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             set -e
-            cd /opt/apps/${{ github.event.repository.name }}
+            # server folders and subdomains are lowercase even if the repo name is not (e.g. "KUT")
+            cd "/opt/apps/$(echo '${{ github.event.repository.name }}' | tr '[:upper:]' '[:lower:]')"
             git pull --ff-only
             docker compose up -d --build
             docker image prune -f
