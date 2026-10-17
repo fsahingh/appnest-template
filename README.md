@@ -62,4 +62,5 @@ uvicorn app.main:app --reload
 | `docker-compose.yml` | Port `127.0.0.1:${APP_PORT}`, `data` volume'u |
 | `.github/workflows/deploy.yml` | main'e push'ta sunucuda deploy |
 | `deploy/new-app.sh` | Sunucuda yeni uygulama kurulumu |
+| `dashboard/index.html` | apps.appnest.us paneli (uygulama kartları, Sign out). Kurulum/güncelleme: `deploy/setup-dashboard.sh` |
 | `landing/index.html` | appnest.us ana sayfası (Sign in butonu). Sunucuda `/var/www/appnest/` altına kopyalanır |

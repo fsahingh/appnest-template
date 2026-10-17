@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>appnest · Apps</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0b0d17">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%2300d4ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M18 40l14-8 14 8-14 8z' fill='white' opacity='.95'/%3E%3Cpath d='M18 30l14-8 14 8-14 8z' fill='white' opacity='.6'/%3E%3Cpath d='M18 20l14-8 14 8-14 8z' fill='white' opacity='.3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0d17; --text: #f4f5fb; --muted: #a3a8c3; --faint: #6f7491;
+      --violet: #7c5cff; --cyan: #00d4ff;
+      --card: rgba(255, 255, 255, 0.045); --card-hover: rgba(255, 255, 255, 0.075); --border: rgba(255, 255, 255, 0.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; }
+    body { font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+
+    .bg { position: fixed; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(100px); animation: drift 26s ease-in-out infinite alternate; }
+    .b1 { width: 42vmax; height: 42vmax; background: var(--violet); opacity: .32; top: -20vmax; left: -14vmax; }
+    .b2 { width: 36vmax; height: 36vmax; background: var(--cyan); opacity: .2; bottom: -18vmax; right: -12vmax; animation-duration: 32s; animation-delay: -8s; }
+    @keyframes drift { to { transform: translate(5vmax, 6vmax) scale(1.1); } }
+    .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse at top, #000 20%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse at top, #000 20%, transparent 70%); }
+
+    .wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: calc(env(safe-area-inset-top, 0px) + 20px) 16px calc(env(safe-area-inset-bottom, 0px) + 40px); }
+    header { display: flex; align-items: center; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; text-decoration: none; color: var(--text); flex: 1; }
+    .brand svg { width: 32px; height: 32px; }
+    .user { display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: .95rem; background: linear-gradient(135deg, var(--violet), var(--cyan)); color: #fff; }
+    .signout { display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--card); color: var(--muted); font: inherit; font-size: .85rem; font-weight: 600; text-decoration: none; transition: color .2s, border-color .2s; }
+    .signout:hover { color: var(--text); border-color: rgba(255,255,255,.25); }
+    .signout svg { width: 16px; height: 16px; }
+
+    .hero { margin: 56px 0 28px; animation: rise .7s ease-out both; }
+    .hero .eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--cyan); margin-bottom: 10px; }
+    .hero h1 { font-size: clamp(2rem, 6vw, 2.8rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.1; }
+    .hero h1 .grad { background: linear-gradient(90deg, var(--violet), var(--cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p { color: var(--muted); margin-top: 10px; font-size: 1rem; }
+    @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+
+    .apps { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .app { display: flex; align-items: center; gap: 16px; padding: 18px; border-radius: 20px; background: var(--card); border: 1px solid var(--border); color: inherit; text-decoration: none; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: transform .2s ease, background .2s ease, border-color .2s ease; animation: rise .7s ease-out both; }
+    .app:hover { transform: translateY(-3px); background: var(--card-hover); border-color: rgba(124, 92, 255, .5); }
+    .app:active { transform: scale(.98); }
+    .app .icon { width: 60px; height: 60px; border-radius: 16px; flex-shrink: 0; overflow: hidden; box-shadow: 0 10px 24px rgba(0,0,0,.35); }
+    .app .icon svg { width: 100%; height: 100%; display: block; }
+    .app h2 { font-size: 1.1rem; font-weight: 700; }
+    .app p { color: var(--muted); font-size: .88rem; margin-top: 3px; line-height: 1.4; }
+    .app .go { margin-left: auto; color: var(--faint); transition: transform .2s, color .2s; }
+    .app:hover .go { transform: translateX(3px); color: var(--text); }
+    .app .go svg { width: 20px; height: 20px; }
+    .soon { opacity: .55; border-style: dashed; pointer-events: none; }
+    .soon .icon { display: grid; place-items: center; background: rgba(255,255,255,.04); box-shadow: none; color: var(--faint); font-size: 1.6rem; }
+
+    footer { margin-top: 48px; text-align: center; color: var(--faint); font-size: .78rem; }
+    footer a { color: var(--faint); }
+
+    @media (max-width: 520px) { .user .email { display: none; } .hero { margin-top: 40px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="grid"></div></div>
+
+  <div class="wrap">
+    <header>
+      <a class="brand" href="https://appnest.us">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#00d4ff"/></linearGradient></defs>
+          <rect width="64" height="64" rx="16" fill="url(#lg)"/>
+          <path d="M18 40l14-8 14 8-14 8z" fill="#fff" opacity=".95"/><path d="M18 30l14-8 14 8-14 8z" fill="#fff" opacity=".6"/><path d="M18 20l14-8 14 8-14 8z" fill="#fff" opacity=".3"/>
+        </svg>
+        appnest
+      </a>
+      <div class="user">
+        <span class="email muted" id="email" style="color:var(--muted);font-size:.85rem"></span>
+        <span class="avatar" id="avatar" aria-hidden="true">·</span>
+        <a class="signout" href="https://appnest.cloudflareaccess.com/cdn-cgi/access/logout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Sign out
+        </a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Your apps</div>
+      <h1 id="greeting">Welcome <span class="grad">back</span></h1>
+      <p>Pick up where you left off.</p>
+    </section>
+
+    <main class="apps" id="apps"></main>
+
+    <footer>© <span id="y">2026</span> appnest · <a id="contact" href="#">Contact</a></footer>
+  </div>
+
+  <script>
+    // Add new apps here.
+    const APPS = [
+      {
+        name: "KUT",
+        description: "Live score keeping, rankings and history for Okey nights.",
+        url: "https://kut.appnest.us/",
+        icon: '<svg viewBox="0 0 512 512"><defs><linearGradient id="k" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f8cff"/><stop offset="1" stop-color="#7b5cff"/></linearGradient></defs><rect width="512" height="512" fill="#0b0c10"/><rect x="146" y="70" width="220" height="330" rx="34" fill="url(#k)"/><rect x="166" y="90" width="180" height="290" rx="22" fill="#f4f1e8"/><text x="256" y="300" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-weight="800" font-size="170" fill="#d6372f">K</text><circle cx="256" cy="150" r="20" fill="#1f2a44"/></svg>',
+      },
+    ];
+
+    const arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    document.getElementById("apps").innerHTML =
+      APPS.map((a, i) => `
+        <a class="app" href="${esc(a.url)}" style="animation-delay:${0.1 + i * 0.06}s">
+          <span class="icon">${a.icon}</span>
+          <span><h2>${esc(a.name)}</h2><p>${esc(a.description)}</p></span>
+          <span class="go">${arrow}</span>
+        </a>`).join("") +
+      `<div class="app soon" style="animation-delay:${0.1 + APPS.length * 0.06}s">
+          <span class="icon">+</span>
+          <span><h2>More soon</h2><p>New apps will show up here.</p></span>
+        </div>`;
+
+    document.getElementById("y").textContent = new Date().getFullYear();
+    document.getElementById("contact").href = "mailto:" + ["info", "appnest.us"].join("@");
+
+    // Cloudflare Access exposes the signed-in identity on every protected host.
+    fetch("/cdn-cgi/access/get-identity", { credentials: "same-origin" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((id) => {
+        if (!id) return;
+        const email = id.email || "";
+        const name = (id.name || email.split("@")[0] || "").trim();
+        const first = name.split(/\s+/)[0];
+        if (first) {
+          const g = document.getElementById("greeting");
+          g.innerHTML = 'Welcome, <span class="grad"></span>';
+          g.querySelector(".grad").textContent = first.charAt(0).toUpperCase() + first.slice(1);
+        }
+        document.getElementById("email").textContent = email;
+        document.getElementById("avatar").textContent = (first || email || "·").charAt(0).toUpperCase();
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>
