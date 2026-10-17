@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy · appnest</title>
+  <meta name="description" content="How appnest and its apps handle your data.">
+  <meta name="theme-color" content="#0b0d17">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%2300d4ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M18 40l14-8 14 8-14 8z' fill='white' opacity='.95'/%3E%3Cpath d='M18 30l14-8 14 8-14 8z' fill='white' opacity='.6'/%3E%3Cpath d='M18 20l14-8 14 8-14 8z' fill='white' opacity='.3'/%3E%3C/svg%3E">
+  <style>
+    :root { --bg: #0b0d17; --text: #e9eaf3; --muted: #a3a8c3; --accent: #8f7bff; --border: rgba(255,255,255,.1); }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.7 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+    main { max-width: 720px; margin: 0 auto; padding: 48px 16px 64px; }
+    a { color: var(--accent); }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 700; margin-bottom: 32px; }
+    .brand svg { width: 28px; height: 28px; }
+    h1 { font-size: 2rem; letter-spacing: -.02em; margin: 0 0 4px; }
+    h2 { font-size: 1.15rem; margin: 32px 0 6px; }
+    p, li { color: var(--muted); }
+    .updated { color: var(--muted); font-size: .9rem; margin-bottom: 24px; }
+    ul { padding-left: 20px; }
+    footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); font-size: .85rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="brand" href="/">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#00d4ff"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lg)"/><path d="M18 40l14-8 14 8-14 8z" fill="#fff" opacity=".95"/><path d="M18 30l14-8 14 8-14 8z" fill="#fff" opacity=".6"/><path d="M18 20l14-8 14 8-14 8z" fill="#fff" opacity=".3"/></svg>
+      appnest
+    </a>
+    <h1>Privacy Policy</h1>
+    <div class="updated">Last updated: October 17, 2026</div>
+
+    <p>appnest (appnest.us) is a small, private collection of web apps, such as KUT, a score keeper for game nights. It is run by an individual and is not a commercial service. This page explains what data the apps handle and why.</p>
+
+    <h2>Signing in</h2>
+    <p>Sign-in is handled by Cloudflare Access. When you sign in with Google or with a one-time email code, we receive your <strong>name and email address</strong> only. We do not receive your Google password, contacts, files or any other Google data. Your email is used solely to check whether you were invited to an app or a game.</p>
+
+    <h2>Data the apps store</h2>
+    <ul>
+      <li><strong>Player profiles:</strong> a display name, optionally a street name (used as a game location) and an email address (used only to send game invitations).</li>
+      <li><strong>Game data:</strong> dates, locations, scores, penalties and results.</li>
+      <li><strong>Technical logs:</strong> standard web server logs (IP address, time, requested page) kept for security and troubleshooting.</li>
+    </ul>
+
+    <h2>Emails</h2>
+    <p>If someone adds your email to a game, the app may send you an invitation link for that game. We do not send newsletters or marketing email, and we never sell or share email addresses.</p>
+
+    <h2>Sharing</h2>
+    <p>We do not sell, rent or share personal data with third parties. Data is processed only by the services needed to run the apps: Cloudflare (sign-in and network protection), Google (sign-in, if you choose it), Brevo (delivery of invitation emails) and our hosting provider.</p>
+
+    <h2>Cookies</h2>
+    <p>Cloudflare Access sets a session cookie so you stay signed in. The apps do not use advertising or tracking cookies.</p>
+
+    <h2>Your choices</h2>
+    <p>You can ask us at any time to show, correct or delete the data stored about you. Write to <a id="mail" href="#">info [at] appnest.us</a> and we will respond within 30 days.</p>
+
+    <h2>Changes</h2>
+    <p>If this policy changes, the date at the top of this page will be updated.</p>
+
+    <footer>© <span id="y">2026</span> appnest · <a href="/">Home</a></footer>
+  </main>
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+    const a = ["info", "appnest.us"].join("@");
+    const m = document.getElementById("mail"); m.href = "mailto:" + a; m.textContent = a;
+  </script>
+</body>
+</html>
