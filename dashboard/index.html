@@ -81,7 +81,7 @@
       <div class="user">
         <span class="email muted" id="email" style="color:var(--muted);font-size:.85rem"></span>
         <span class="avatar" id="avatar" aria-hidden="true">·</span>
-        <a class="signout" href="https://appnest.cloudflareaccess.com/cdn-cgi/access/logout">
+        <a class="signout" id="signout" href="/cdn-cgi/access/logout">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
           Sign out
         </a>
@@ -124,6 +124,15 @@
           <span class="icon">+</span>
           <span><h2>More soon</h2><p>New apps will show up here.</p></span>
         </div>`;
+
+    // Sign out in the background (ends the Access session for every app), then land on the home page
+    // instead of Cloudflare's "You successfully logged out" screen.
+    document.getElementById("signout").addEventListener("click", (e) => {
+      e.preventDefault();
+      fetch("/cdn-cgi/access/logout", { credentials: "same-origin" })
+        .catch(() => {})
+        .finally(() => location.replace("https://appnest.us/"));
+    });
 
     document.getElementById("y").textContent = new Date().getFullYear();
     document.getElementById("contact").href = "mailto:" + ["info", "appnest.us"].join("@");
