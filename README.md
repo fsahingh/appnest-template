@@ -64,3 +64,12 @@ uvicorn app.main:app --reload
 | `deploy/new-app.sh` | Sunucuda yeni uygulama kurulumu |
 | `dashboard/index.html` | apps.appnest.us paneli (uygulama kartları, Sign out). Kurulum/güncelleme: `deploy/setup-dashboard.sh` |
 | `landing/index.html` | appnest.us ana sayfası (Sign in butonu). Sunucuda `/var/www/appnest/` altına kopyalanır |
+
+## Yeni oturum için notlar (KUT'tan öğrenilenler)
+
+- **Kullanılan portlar:** `kut` → 8001. Yeni uygulamaya sıradaki boş portu ver (önce sunucuda `grep -h APP_PORT /opt/apps/*/.env`).
+- **Panel kartı:** Yeni uygulama yayına çıkınca `dashboard/index.html` içindeki uygulama listesine kart ekle. İkon için uygulamanın kendi `/static/icons/icon-192.png` dosyasını kullan. Sunucuda `deploy/setup-dashboard.sh` ile güncellenir; bu repo push'ta otomatik yayına çıkmaz (Actions'taki "Deploy failed" normal).
+- **Herkese açık sayfalar:** Giriş istemeyen bir yol gerekirse (paylaşım linki gibi), Cloudflare Access'te o yollar için ayrı bir *bypass* uygulaması aç (KUT'ta `KUT public links`: `/g`, `/api/view`, `/play`, `/api/play`, `/host`, `/api/host`, `/static`). Statik dosyalar bypass'ta olursa ikonlar da başka sayfalarda kullanılabilir.
+- **Fontlar:** Google Fonts yerine `app/static/fonts` altında kendi sunucumuzdan ver.
+- **iPhone ana ekran uygulaması:** `manifest.webmanifest`, `apple-touch-icon` ve kökte `/favicon.ico` + `/apple-touch-icon.png` yolları. Ana ekrandan açılınca tarayıcı olmadığı için aşağı çekip yenileme ve kenardan geri kaydırma uygulamada yazılmalı (KUT `app.js` → `homeScreenGestures`).
+- **Çalışma şekli:** Türkçe, adım adım. Sunucuda büyük değişiklikten önce sor. Yeni tasarımlarda önce görsel çalışma göster, onaydan sonra uygula.
