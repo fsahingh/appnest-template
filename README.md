@@ -64,6 +64,7 @@ uvicorn app.main:app --reload
 | `deploy/new-app.sh` | Sunucuda yeni uygulama kurulumu |
 | `dashboard/index.html` | apps.appnest.us paneli (uygulama kartları, Sign out). Kurulum/güncelleme: `deploy/setup-dashboard.sh` |
 | `landing/index.html` | appnest.us ana sayfası (Sign in butonu). Sunucuda `/var/www/appnest/` altına kopyalanır |
+| `landing/no-access.html` | Davet edilmemiş biri giriş yapınca Cloudflare'in yerine gösterilen "No access yet" sayfası (`https://appnest.us/no-access.html`). "Ask for access" formu isteği sharex'e (`/api/public/access-request`) gönderir; istekler sharex → Activity → Site access'te görünür. Cloudflare'de "appnest apps" ve "App Launcher" uygulamalarının *custom deny URL*'i bu sayfadır |
 | `brand/` | appnest logosu: sekme ikonları, iPhone/Android ana ekran ikonu, manifest. İki sitenin köküne kopyalanır |
 | `deploy/update-pages.sh` | appnest.us, apps.appnest.us sayfalarını ve logo dosyalarını sunucuda tek komutla günceller |
 | `deploy/backup-apps.sh` | Her gece tüm uygulamaların SQLite veritabanını `~/backups/<app>/` altına yedekler (30 gün) |
@@ -90,5 +91,4 @@ uvicorn app.main:app --reload
 ## İleride karar verilecekler
 
 - **Yetkiye göre yönlendiren panel:** appnest.us → Sign in → panel, kişinin e-postasına göre: birden çok uygulama → sadece yetkili kartlar; tek uygulama → doğrudan o uygulama; hiçbiri → "No access yet" sayfası. Panel küçük bir FastAPI uygulaması olur, uygulamalar sunucu içinden gizli anahtarla "bu e-posta yetkili mi" cevabı verir, Cloudflare'de panelin kuralı "Google ile giren herkes" olur.
-- **"No access yet" sayfası ve "Ask for access" formu:** Tasarım hazır (`no-access-page` dalında `landing/no-access.html`). Düğme e-posta yerine bir form olacak; istek sharex'teki gibi bir onay listesine düşecek. Yukarıdaki panelle birlikte yapılacak.
 - **Sunucu dışı yedek (Cloudflare R2):** Datawagon'un kendisinde sorun olursa diye; şifreli, ücretsiz katman yeterli.
