@@ -9,6 +9,9 @@ concurrency: deploy
 
 jobs:
   deploy:
+    # The template itself is not an app on the server (the panel and landing page are installed by
+    # hand), so it skips the deploy; repos created from the template deploy as usual.
+    if: github.repository != 'fsahingh/appnest-template'
     runs-on: ubuntu-latest
     steps:
       - name: Pull and restart on the server
