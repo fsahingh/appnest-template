@@ -75,6 +75,7 @@ uvicorn app.main:app --reload
 - **iPhone ana ekran uygulaması:** `manifest.webmanifest`, `apple-touch-icon` ve kökte `/favicon.ico` + `/apple-touch-icon.png` yolları. Ana ekrandan açılınca tarayıcı olmadığı için aşağı çekip yenileme ve kenardan geri kaydırma uygulamada yazılmalı (KUT `app.js` → `homeScreenGestures`).
 - **Çalışma şekli:** Türkçe, adım adım. Sunucuda büyük değişiklikten önce sor. Yeni tasarımlarda önce görsel çalışma göster, onaydan sonra uygula.
 - **Kullanılan portlar (güncel):** `kut` → 8001, `sharex` → 8002.
+- **Kendi girişini yapan uygulamalar (sharex):** sharex'in ana Access kuralı Bypass; giriş `/auth/google` ve `/auth/email` yollarından, uygulamanın kendi oturumuyla. Paneldeki kartı `https://sharex.appnest.us/auth/google` adresine gider: panelden gelen kişi zaten Google ile girmiş olduğu için sharex'e sormadan girer.
 - **Cloudflare ekranı görünmemeli (genel kural):** Kullanıcı sitenin hiçbir yerinde Cloudflare'in kendi sayfalarını görmemeli; hatalar appnest temasında bir sayfaya düşmeli. Tek giriş yöntemi Google olduğu için Access uygulamalarında `auto_redirect_to_identity` açık olmalı (seçim ekranı atlanır). Sign out, `/cdn-cgi/access/logout`'u arka planda `fetch` ile çağırıp `https://appnest.us/`'a gitmeli (panel, KUT ve sharex böyle).
 - **Önbellek:** Cloudflare `.js`/`.css` dosyalarını kenar sunucularında ve tarayıcıda (4 saat) saklar. Adında sürüm olmayan uygulama kodu için sunucu `Cache-Control: no-cache` göndermeli, service worker da `fetch(..., {cache: "no-cache"})` kullanmalı (sharex `app/main.py` ve `sw.js`).
 

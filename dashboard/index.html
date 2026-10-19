@@ -111,7 +111,9 @@
       {
         name: "sharex",
         description: "Shared trip costs and the GaraJ club ledger: dues, pool and fines.",
-        url: "https://sharex.appnest.us/",
+        // sharex signs people in itself; its Google sign-in path picks up the panel's Access session,
+        // so people coming from here go straight in instead of seeing sharex's welcome screen
+        url: "https://sharex.appnest.us/auth/google",
         icon: '<img src="https://sharex.appnest.us/static/icons/icon-192.png?v=1" alt="">',
       },
     ];
