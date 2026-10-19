@@ -49,7 +49,7 @@
     }
 
     .wrap {
-      position: relative; z-index: 1; min-height: 100%;
+      position: relative; z-index: 1; min-height: calc(100% - 48px);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       padding: 32px 16px; text-align: center;
     }
@@ -84,8 +84,28 @@
       opacity: 0; animation: rise .8s .3s ease-out forwards;
     }
     .card b { color: var(--text); font-weight: 600; }
+    .ask { display: none; margin-top: 28px; width: 100%; max-width: 30rem; text-align: left; padding: 20px; border-radius: 20px;
+      border: 1px solid var(--border); background: rgba(255,255,255,.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    .ask.open { display: block; animation: rise .5s ease-out; }
+    .ask h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+    .ask p { color: var(--muted); font-size: .88rem; margin-bottom: 16px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    label { display: block; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 12px 0 6px; }
+    input, select, textarea { width: 100%; font: inherit; font-size: 16px; color: var(--text); background: rgba(255,255,255,.06);
+      border: 1px solid var(--border); border-radius: 12px; padding: 11px 13px; outline: none; }
+    textarea { min-height: 76px; resize: vertical; }
+    select option { color: #111; }
+    input:focus, select:focus, textarea:focus { border-color: var(--cyan); }
+    .hp { position: absolute; left: -9999px; }
+    .ask .btn.primary { width: 100%; justify-content: center; margin-top: 18px; cursor: pointer; }
+    .ask .btn[disabled] { opacity: .5; cursor: default; }
+    .msg { margin-top: 12px; font-size: .88rem; color: #ff9b9b; min-height: 1em; }
+    .sent { display: none; text-align: center; }
+    .sent.show { display: block; animation: rise .5s ease-out; }
+    .sent .tick { width: 56px; height: 56px; margin: 4px auto 14px; border-radius: 50%; display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--violet), var(--cyan)); }
     footer {
-      position: absolute; bottom: 24px; left: 0; right: 0; z-index: 1;
+      position: relative; padding: 0 16px 24px; z-index: 1;
       font-size: .78rem; color: var(--muted); text-align: center;
     }
     footer a { color: var(--muted); text-decoration: none; border-bottom: 1px dotted rgba(163,168,195,.5); }
@@ -113,31 +133,81 @@
       <path d="M18 20l14-8 14 8-14 8z" fill="#fff" opacity=".3"/>
     </svg>
     <h1>No access yet</h1>
-    <p class="lead">You signed in, but this account hasn't been invited to appnest.</p>
+    <p class="lead">You signed in, but this account hasn't been invited yet.</p>
 
-    <div class="card">
-      <b>Signed in with the wrong Google account?</b> Sign out of Google, or open the link in a private window, then try again.<br><br>
-      <b>Need access?</b> Ask whoever invited you, or write to us and we'll add you.
+    <div class="card" id="tips">
+      <b>Signed in with the wrong Google account?</b> Sign out of Google, or open the link in a private window, then try again.
     </div>
 
-    <div class="btns">
-      <a class="btn primary" href="/">
+    <div class="btns" id="btns">
+      <a class="btn primary" id="ask-open" href="#ask">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Ask for access
+      </a>
+      <a class="btn" href="/">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
         Back to home
       </a>
-      <a class="btn" id="ask" href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
-        Ask for access
-      </a>
     </div>
+
+    <form class="ask" id="ask" novalidate>
+      <div id="ask-form">
+        <h2>Ask for access</h2>
+        <p>Tell us who you are. Once you're added, sign in again with the same account.</p>
+        <div class="row2">
+          <div><label for="f">First name</label><input id="f" name="first_name" autocomplete="given-name" maxlength="40" required></div>
+          <div><label for="l">Last name</label><input id="l" name="last_name" autocomplete="family-name" maxlength="40"></div>
+        </div>
+        <label for="e">Email you signed in with</label>
+        <input id="e" name="email" type="email" autocomplete="email" inputmode="email" maxlength="120" required placeholder="you@gmail.com">
+        <label for="a">Which app?</label>
+        <select id="a" name="app">
+          <option value="">Not sure</option>
+          <option value="kut">KUT</option>
+          <option value="sharex">sharex</option>
+        </select>
+        <label for="n">Anything we should know? (optional)</label>
+        <textarea id="n" name="note" maxlength="300" placeholder="e.g. Ahmet told me to sign up for the Sunday game"></textarea>
+        <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn primary" id="send" type="submit">Send request</button>
+        <div class="msg" id="msg" role="status"></div>
+      </div>
+      <div class="sent" id="sent">
+        <div class="tick"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <h2>Request sent</h2>
+        <p>Thanks! Once you're added, sign in again with the same account.</p>
+      </div>
+    </form>
   </main>
 
   <footer>© <span id="y">2026</span> appnest · <a href="/privacy.html">Privacy</a></footer>
 
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
-    // Assemble the contact address at runtime so it isn't sitting in the HTML for scrapers
-    document.getElementById("ask").href = "mailto:" + ["info", "appnest.us"].join("@") + "?subject=" + encodeURIComponent("appnest access");
+    const form = document.getElementById("ask"), msg = document.getElementById("msg"), send = document.getElementById("send");
+    document.getElementById("ask-open").addEventListener("click", (e) => {
+      e.preventDefault();
+      form.classList.add("open");
+      document.getElementById("btns").style.display = "none";
+      document.getElementById("f").focus();
+    });
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      if (!data.first_name.trim()) return (msg.textContent = "Please add your first name.");
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email.trim())) return (msg.textContent = "Please enter the email you signed in with.");
+      send.disabled = true; msg.textContent = "";
+      try {
+        const r = await fetch("https://sharex.appnest.us/api/public/access-request", {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+        if (!r.ok) throw new Error((await r.json().catch(() => ({}))).message || "Could not send it. Please try again.");
+        document.getElementById("ask-form").style.display = "none";
+        document.getElementById("sent").classList.add("show");
+      } catch (err) {
+        msg.textContent = err.message;
+        send.disabled = false;
+      }
+    });
   </script>
 </body>
 </html>
