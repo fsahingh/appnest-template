@@ -64,6 +64,8 @@ uvicorn app.main:app --reload
 | `deploy/new-app.sh` | Sunucuda yeni uygulama kurulumu |
 | `dashboard/index.html` | apps.appnest.us paneli (uygulama kartları, Sign out). Kurulum/güncelleme: `deploy/setup-dashboard.sh` |
 | `landing/index.html` | appnest.us ana sayfası (Sign in butonu). Sunucuda `/var/www/appnest/` altına kopyalanır |
+| `brand/` | appnest logosu: sekme ikonları, iPhone/Android ana ekran ikonu, manifest. İki sitenin köküne kopyalanır |
+| `deploy/update-pages.sh` | appnest.us, apps.appnest.us sayfalarını ve logo dosyalarını sunucuda tek komutla günceller |
 | `deploy/backup-apps.sh` | Her gece tüm uygulamaların SQLite veritabanını `~/backups/<app>/` altına yedekler (30 gün) |
 
 ## Yeni oturum için notlar (KUT'tan öğrenilenler)
