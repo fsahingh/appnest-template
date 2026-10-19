@@ -64,6 +64,7 @@ uvicorn app.main:app --reload
 | `deploy/new-app.sh` | Sunucuda yeni uygulama kurulumu |
 | `dashboard/index.html` | apps.appnest.us paneli (uygulama kartları, Sign out). Kurulum/güncelleme: `deploy/setup-dashboard.sh` |
 | `landing/index.html` | appnest.us ana sayfası (Sign in butonu). Sunucuda `/var/www/appnest/` altına kopyalanır |
+| `deploy/backup-apps.sh` | Her gece tüm uygulamaların SQLite veritabanını `~/backups/<app>/` altına yedekler (30 gün) |
 
 ## Yeni oturum için notlar (KUT'tan öğrenilenler)
 
@@ -73,3 +74,18 @@ uvicorn app.main:app --reload
 - **Fontlar:** Google Fonts yerine `app/static/fonts` altında kendi sunucumuzdan ver.
 - **iPhone ana ekran uygulaması:** `manifest.webmanifest`, `apple-touch-icon` ve kökte `/favicon.ico` + `/apple-touch-icon.png` yolları. Ana ekrandan açılınca tarayıcı olmadığı için aşağı çekip yenileme ve kenardan geri kaydırma uygulamada yazılmalı (KUT `app.js` → `homeScreenGestures`).
 - **Çalışma şekli:** Türkçe, adım adım. Sunucuda büyük değişiklikten önce sor. Yeni tasarımlarda önce görsel çalışma göster, onaydan sonra uygula.
+- **Kullanılan portlar (güncel):** `kut` → 8001, `sharex` → 8002.
+- **Cloudflare ekranı görünmemeli (genel kural):** Kullanıcı sitenin hiçbir yerinde Cloudflare'in kendi sayfalarını görmemeli; hatalar appnest temasında bir sayfaya düşmeli. Tek giriş yöntemi Google olduğu için Access uygulamalarında `auto_redirect_to_identity` açık olmalı (seçim ekranı atlanır). Sign out, `/cdn-cgi/access/logout`'u arka planda `fetch` ile çağırıp `https://appnest.us/`'a gitmeli (panel, KUT ve sharex böyle).
+- **Önbellek:** Cloudflare `.js`/`.css` dosyalarını kenar sunucularında ve tarayıcıda (4 saat) saklar. Adında sürüm olmayan uygulama kodu için sunucu `Cache-Control: no-cache` göndermeli, service worker da `fetch(..., {cache: "no-cache"})` kullanmalı (sharex `app/main.py` ve `sw.js`).
+
+## Yedekleme
+
+- Sunucuda her gece `deploy/backup-apps.sh` çalışır (deploy kullanıcısının crontab'ı). Her uygulamanın veritabanı `~/backups/<app>/<app>-YYYY-MM-DD.db.gz` olarak saklanır, 30 günden eskiler silinir, kayıt `~/backups/backup.log`'da.
+- Datawagon'da sunucunun otomatik yedeği (snapshot) açık; günlük yedekler de sunucunun içinde olduğu için ona dahil.
+- Geri yükleme (örnek sharex): `gunzip -k ~/backups/sharex/sharex-TARIH.db.gz`, sonra `cd /opt/apps/sharex && docker compose stop web && docker compose cp ~/backups/sharex/sharex-TARIH.db web:/app/data/sharex.db && docker compose start web` (WAL dosyaları varsa önce silinmeli; emin değilsen sor).
+
+## İleride karar verilecekler
+
+- **Yetkiye göre yönlendiren panel:** appnest.us → Sign in → panel, kişinin e-postasına göre: birden çok uygulama → sadece yetkili kartlar; tek uygulama → doğrudan o uygulama; hiçbiri → "No access yet" sayfası. Panel küçük bir FastAPI uygulaması olur, uygulamalar sunucu içinden gizli anahtarla "bu e-posta yetkili mi" cevabı verir, Cloudflare'de panelin kuralı "Google ile giren herkes" olur.
+- **"No access yet" sayfası ve "Ask for access" formu:** Tasarım hazır (`no-access-page` dalında `landing/no-access.html`). Düğme e-posta yerine bir form olacak; istek sharex'teki gibi bir onay listesine düşecek. Yukarıdaki panelle birlikte yapılacak.
+- **Sunucu dışı yedek (Cloudflare R2):** Datawagon'un kendisinde sorun olursa diye; şifreli, ücretsiz katman yeterli.
