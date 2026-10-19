@@ -64,12 +64,31 @@ uvicorn app.main:app --reload
 | `deploy/new-app.sh` | Sunucuda yeni uygulama kurulumu |
 | `dashboard/index.html` | apps.appnest.us paneli (uygulama kartları, Sign out). Kurulum/güncelleme: `deploy/setup-dashboard.sh` |
 | `landing/index.html` | appnest.us ana sayfası (Sign in butonu). Sunucuda `/var/www/appnest/` altına kopyalanır |
+| `brand/` | appnest logosu: sekme ikonları, iPhone/Android ana ekran ikonu, manifest. İki sitenin köküne kopyalanır |
+| `deploy/update-pages.sh` | appnest.us, apps.appnest.us sayfalarını ve logo dosyalarını sunucuda tek komutla günceller |
+| `deploy/backup-apps.sh` | Her gece tüm uygulamaların SQLite veritabanını `~/backups/<app>/` altına yedekler (30 gün) |
 
 ## Yeni oturum için notlar (KUT'tan öğrenilenler)
 
 - **Kullanılan portlar:** `kut` → 8001. Yeni uygulamaya sıradaki boş portu ver (önce sunucuda `grep -h APP_PORT /opt/apps/*/.env`).
-- **Panel kartı:** Yeni uygulama yayına çıkınca `dashboard/index.html` içindeki uygulama listesine kart ekle. İkon için uygulamanın kendi `/static/icons/icon-192.png` dosyasını kullan. Sunucuda `deploy/setup-dashboard.sh` ile güncellenir; bu repo push'ta otomatik yayına çıkmaz (Actions'taki "Deploy failed" normal).
+- **Panel kartı:** Yeni uygulama yayına çıkınca `dashboard/index.html` içindeki uygulama listesine kart ekle. İkon için uygulamanın kendi `/static/icons/icon-192.png` dosyasını kullan. Sunucuda `deploy/setup-dashboard.sh` ile güncellenir; bu repo push'ta otomatik yayına çıkmaz (Deploy işi şablonun kendisinde atlanır).
 - **Herkese açık sayfalar:** Giriş istemeyen bir yol gerekirse (paylaşım linki gibi), Cloudflare Access'te o yollar için ayrı bir *bypass* uygulaması aç (KUT'ta `KUT public links`: `/g`, `/api/view`, `/play`, `/api/play`, `/host`, `/api/host`, `/static`). Statik dosyalar bypass'ta olursa ikonlar da başka sayfalarda kullanılabilir.
 - **Fontlar:** Google Fonts yerine `app/static/fonts` altında kendi sunucumuzdan ver.
 - **iPhone ana ekran uygulaması:** `manifest.webmanifest`, `apple-touch-icon` ve kökte `/favicon.ico` + `/apple-touch-icon.png` yolları. Ana ekrandan açılınca tarayıcı olmadığı için aşağı çekip yenileme ve kenardan geri kaydırma uygulamada yazılmalı (KUT `app.js` → `homeScreenGestures`).
 - **Çalışma şekli:** Türkçe, adım adım. Sunucuda büyük değişiklikten önce sor. Yeni tasarımlarda önce görsel çalışma göster, onaydan sonra uygula.
+- **Kullanılan portlar (güncel):** `kut` → 8001, `sharex` → 8002.
+- **Kendi girişini yapan uygulamalar (sharex):** sharex'in ana Access kuralı Bypass; giriş `/auth/google` ve `/auth/email` yollarından, uygulamanın kendi oturumuyla. Paneldeki kartı `https://sharex.appnest.us/auth/google` adresine gider: panelden gelen kişi zaten Google ile girmiş olduğu için sharex'e sormadan girer.
+- **Cloudflare ekranı görünmemeli (genel kural):** Kullanıcı sitenin hiçbir yerinde Cloudflare'in kendi sayfalarını görmemeli; hatalar appnest temasında bir sayfaya düşmeli. Tek giriş yöntemi Google olduğu için Access uygulamalarında `auto_redirect_to_identity` açık olmalı (seçim ekranı atlanır). Sign out, `/cdn-cgi/access/logout`'u arka planda `fetch` ile çağırıp `https://appnest.us/`'a gitmeli (panel, KUT ve sharex böyle).
+- **Önbellek:** Cloudflare `.js`/`.css` dosyalarını kenar sunucularında ve tarayıcıda (4 saat) saklar. Adında sürüm olmayan uygulama kodu için sunucu `Cache-Control: no-cache` göndermeli, service worker da `fetch(..., {cache: "no-cache"})` kullanmalı (sharex `app/main.py` ve `sw.js`).
+
+## Yedekleme
+
+- Sunucuda her gece `deploy/backup-apps.sh` çalışır (deploy kullanıcısının crontab'ı). Her uygulamanın veritabanı `~/backups/<app>/<app>-YYYY-MM-DD.db.gz` olarak saklanır, 30 günden eskiler silinir, kayıt `~/backups/backup.log`'da.
+- Datawagon'da sunucunun otomatik yedeği (snapshot) açık; günlük yedekler de sunucunun içinde olduğu için ona dahil.
+- Geri yükleme (örnek sharex): `gunzip -k ~/backups/sharex/sharex-TARIH.db.gz`, sonra `cd /opt/apps/sharex && docker compose stop web && docker compose cp ~/backups/sharex/sharex-TARIH.db web:/app/data/sharex.db && docker compose start web` (WAL dosyaları varsa önce silinmeli; emin değilsen sor).
+
+## İleride karar verilecekler
+
+- **Yetkiye göre yönlendiren panel:** appnest.us → Sign in → panel, kişinin e-postasına göre: birden çok uygulama → sadece yetkili kartlar; tek uygulama → doğrudan o uygulama; hiçbiri → "No access yet" sayfası. Panel küçük bir FastAPI uygulaması olur, uygulamalar sunucu içinden gizli anahtarla "bu e-posta yetkili mi" cevabı verir, Cloudflare'de panelin kuralı "Google ile giren herkes" olur.
+- **"No access yet" sayfası ve "Ask for access" formu:** Tasarım hazır (`no-access-page` dalında `landing/no-access.html`). Düğme e-posta yerine bir form olacak; istek sharex'teki gibi bir onay listesine düşecek. Yukarıdaki panelle birlikte yapılacak.
+- **Sunucu dışı yedek (Cloudflare R2):** Datawagon'un kendisinde sorun olursa diye; şifreli, ücretsiz katman yeterli.
